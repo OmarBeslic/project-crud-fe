@@ -1,7 +1,7 @@
 import React from "react";
 import { Table } from "antd";
-import { useGetProjectsQuery, useToggleFavoriteMutation } from "../features/api/projectApi";
-import FavIcon from "../components/FavIcon";
+import { useGetProjectsQuery, useToggleFavoriteMutation } from "../../../features/api/projectApi";
+import FavIcon from "../../../components/FavIcon";
 
 interface ProjectTableProps {
   projects: Project[],
@@ -52,7 +52,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects, isLoading }) => {
     },
   ];
 
-  return <Table dataSource={projects} columns={columns} rowKey="id" loading={isLoading || isToggling} />;
+  return <Table dataSource={projects} columns={columns} rowKey="id" loading={isLoading || isToggling} scroll={{ x: "max-content" }} style={{ width: "100%" }} />;
 };
 
 export default ProjectTable;

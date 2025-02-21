@@ -1,10 +1,12 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import Sidebar from "./Sidebar/Sidebar";
-import ProjectTable from "./Table/Table";
+
 import { useGetProjectsQuery } from "./features/api/projectApi";
 import { Navigate, Route, Routes } from "react-router-dom";
+import Sidebar from "./components/Sidebar/Sidebar";
+import ProjectTable from "./Pages/AllProjects/Table/Table";
+import AllProjects from "./Pages/AllProjects/Table";
 
 const Container = styled.div`
   display: flex;
@@ -21,7 +23,7 @@ const App = () => {
 
       <Routes>
         <Route path="/" element={<Navigate to="/projects" replace />} />
-        <Route path="/projects" element={<ProjectTable projects={projects ?? []} isLoading={isLoading} />} />
+        <Route path="/projects" element={<AllProjects />} />
         <Route path="/projects/new" element={<div />} />
         <Route path="/projects/:id" element={<div />} />
         <Route path="/projects/:id/edit" element={<div />} />
