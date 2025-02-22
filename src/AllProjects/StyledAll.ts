@@ -7,7 +7,6 @@ export const StyledAll = styled.div`
   align-items: end;
   gap: 20px;
   width: 100%;
-  padding: 20px 30px;
   a {
     text-decoration: none;
   }
