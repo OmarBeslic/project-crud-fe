@@ -2,6 +2,7 @@ import React from "react";
 import { Table } from "antd";
 import { useGetProjectsQuery, useToggleFavoriteMutation } from "../../../features/api/projectApi";
 import FavIcon from "../../../components/FavIcon";
+import { Link } from "react-router-dom";
 
 interface ProjectTableProps {
   projects: Project[],
@@ -15,6 +16,7 @@ const ProjectTable: React.FC<ProjectTableProps> = ({ projects, isLoading }) => {
       title: "Project ID",
       dataIndex: "id",
       key: "id",
+      render: (id: string) => <Link to={`/projects/${id}`}>{id}</Link>
     },
     {
       title: "Project Name",

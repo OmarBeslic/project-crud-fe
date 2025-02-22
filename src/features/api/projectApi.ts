@@ -1,40 +1,44 @@
-import { apiSlice } from "./apiSlice";
+import { apiSlice } from './apiSlice';
 
 export const projectsApi = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getProjects: builder.query<Project[], void>({
-      query: () => "/projects",
-      providesTags: ["Projects"],
+      query: () => '/projects',
+      providesTags: ['Projects'],
+    }),
+    getProjectById: builder.query<Project, string>({
+      query: (id) => `/projects/${id}`,
+      providesTags: (result, error, id) => [{ type: 'Projects', id }],
     }),
     addProject: builder.mutation({
       query: (newProject) => ({
-        url: "/projects",
-        method: "POST",
+        url: '/projects',
+        method: 'POST',
         body: newProject,
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: ['Projects'],
     }),
     updateProject: builder.mutation({
       query: ({ id, ...updatedProject }) => ({
         url: `/projects/${id}`,
-        method: "PUT",
+        method: 'PUT',
         body: updatedProject,
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: ['Projects'],
     }),
     deleteProject: builder.mutation({
       query: (id) => ({
         url: `/projects/${id}`,
-        method: "DELETE",
+        method: 'DELETE',
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: ['Projects'],
     }),
     toggleFavorite: builder.mutation({
       query: (id) => ({
         url: `/projects/${id}/favorite`,
-        method: "PATCH",
+        method: 'PATCH',
       }),
-      invalidatesTags: ["Projects"],
+      invalidatesTags: ['Projects'],
     }),
   }),
 });
@@ -45,4 +49,5 @@ export const {
   useUpdateProjectMutation,
   useDeleteProjectMutation,
   useToggleFavoriteMutation,
+  useGetProjectByIdQuery,
 } = projectsApi;

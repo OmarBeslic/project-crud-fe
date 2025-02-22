@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const StyledAll = styled.div`
   display: flex;
@@ -6,10 +6,9 @@ export const StyledAll = styled.div`
   flex-direction: column;
   align-items: end;
   gap: 20px;
-  border: 1px solid red;
   width: 100%;
   padding: 20px 30px;
-  a{
+  a {
     text-decoration: none;
   }
 `;

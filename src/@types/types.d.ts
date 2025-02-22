@@ -6,4 +6,4 @@ type Project = {
   endDate: Date;
   manager: string;
   isFavorite: boolean;
-}
+};
