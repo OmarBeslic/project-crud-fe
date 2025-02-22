@@ -1,13 +1,15 @@
 import React from 'react';
 import { StyledSidebar } from './StyledSidebar';
 import { Link } from 'react-router-dom';
+import { useLayoutContext } from '../../context/LayoutContext';
 
 interface SidebarProps {
   favoriteProjects: Project[];
 }
 const Sidebar: React.FC<SidebarProps> = ({ favoriteProjects }) => {
+  const { collapsed } = useLayoutContext();
   return (
-    <StyledSidebar>
+    <StyledSidebar collapsed={collapsed}>
       <h1 className="sidebar-title">Favorite projects</h1>
       {!favoriteProjects?.length ? (
         <h6 className="no-data">No favorite projects.</h6>
@@ -15,7 +17,7 @@ const Sidebar: React.FC<SidebarProps> = ({ favoriteProjects }) => {
         <ul className="fav-list">
           {favoriteProjects?.map((el, idx) => (
             <li key={idx}>
-              <Link to={`/projects/${el.id}`}>{el.id}</Link>
+              <Link to={`/projects/${el.id}`}>{el.name}</Link>
             </li>
           ))}
         </ul>
