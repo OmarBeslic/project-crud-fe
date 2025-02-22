@@ -1,14 +1,15 @@
 import React, { useEffect } from 'react';
-import { Form, Input, DatePicker, Button, Checkbox, Spin, message } from 'antd';
+import { Form, Input, DatePicker, Button, Spin, message } from 'antd';
 import dayjs from 'dayjs';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import {
   useAddProjectMutation,
   useGetProjectByIdQuery,
   useUpdateProjectMutation,
   useGetProjectsQuery,
+  useDeleteProjectMutation,
 } from '../../features/api/projectApi';
-import { useParams } from 'react-router-dom';
 
 type Mode = 'new' | 'edit' | 'read';
 
@@ -20,57 +21,68 @@ interface ProjectFormProps {
 const ProjectForm: React.FC<ProjectFormProps> = ({ mode, onSubmitSuccess }) => {
   const [form] = Form.useForm();
   const { id: projectId } = useParams();
-  // Fetch all projects for ID validation in "new" mode
+  const navigate = useNavigate();
+
+  // Queries & Mutations
   const { data: allProjects } = useGetProjectsQuery(undefined, {
     skip: mode !== 'new',
   });
-
-  // Fetch project data if in edit or read mode
   const { data: project, isLoading } = useGetProjectByIdQuery(projectId!, {
     skip: mode === 'new',
   });
-
   const [addProject, { isLoading: isAdding }] = useAddProjectMutation();
   const [updateProject, { isLoading: isUpdating }] = useUpdateProjectMutation();
+  const [deleteProject, { isLoading: isDeleting }] = useDeleteProjectMutation();
 
-  // Prefill form when project data is available
+  // Prefill form in edit/read mode
   useEffect(() => {
     if (project) {
       form.setFieldsValue({
         ...project,
-        startDate: dayjs(project.startDate),
-        endDate: dayjs(project.endDate),
+        startDate: project.startDate ? dayjs(project.startDate) : null,
+        endDate: project.endDate ? dayjs(project.endDate) : null,
       });
     }
-  }, [project, form]);
+  }, [project]);
 
-  // Submit handler
-  const handleSubmit = async (values: any) => {
-    const formattedValues = {
-      ...values,
-      startDate: values.startDate?.toISOString(),
-      endDate: values.endDate?.toISOString(),
-    };
-
-    if (mode === 'new') {
-      // Check if ID already exists
-      const idExists = allProjects?.some((p) => p.id === values.id);
-      if (idExists) {
-        message.error('Project ID already exists. Please use a different ID.');
-        return;
-      }
-
-      await addProject(formattedValues).unwrap();
-      message.success('Project created successfully!');
-    } else if (mode === 'edit') {
-      await updateProject({ id: projectId, ...formattedValues }).unwrap();
-      message.success('Project updated successfully!');
+  // Handlers
+  const handleAddProject = async (values: any) => {
+    const idExists = allProjects?.some((p) => p.id === values.id);
+    if (idExists) {
+      message.error('Project ID already exists. Please use a different ID.');
+      return;
     }
 
+    await addProject(formatValues(values)).unwrap();
+    message.success('Project created successfully!');
     onSubmitSuccess?.();
   };
 
-  if (isLoading) return <Spin />;
+  const handleUpdateProject = async (values: any) => {
+    await updateProject({ id: projectId, ...formatValues(values) }).unwrap();
+    message.success('Project updated successfully!');
+    onSubmitSuccess?.();
+  };
+
+  const handleDeleteProject = async () => {
+    await deleteProject(projectId!).unwrap();
+    message.success('Project deleted successfully!');
+    onSubmitSuccess?.();
+  };
+
+  const handleSubmit = async (values: any) => {
+    if (mode === 'new') await handleAddProject(values);
+    else if (mode === 'edit') await handleUpdateProject(values);
+  };
+
+  // Helper function to format dates
+  const formatValues = (values: any) => ({
+    ...values,
+    startDate: values.startDate?.toISOString(),
+    endDate: values.endDate?.toISOString(),
+  });
+
+  if (isLoading) return <Spin style={{ margin: '200px auto' }} />;
 
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
@@ -114,15 +126,13 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ mode, onSubmitSuccess }) => {
           { required: true, message: 'End Date is required' },
           ({ getFieldValue }) => ({
             validator(_, value) {
-              if (!value || !getFieldValue('startDate')) {
+              if (!value || !getFieldValue('startDate'))
                 return Promise.resolve();
-              }
-              if (dayjs(value).isBefore(getFieldValue('startDate'))) {
-                return Promise.reject(
-                  new Error('End Date cannot be before Start Date'),
-                );
-              }
-              return Promise.resolve();
+              return dayjs(value).isBefore(getFieldValue('startDate'))
+                ? Promise.reject(
+                    new Error('End Date cannot be before Start Date'),
+                  )
+                : Promise.resolve();
             },
           }),
         ]}
@@ -138,17 +148,39 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ mode, onSubmitSuccess }) => {
         <Input disabled={mode === 'read'} />
       </Form.Item>
 
-      {mode !== 'read' && (
-        <Form.Item>
+      <Form.Item>
+        <Button onClick={() => navigate('/projects')}>Back</Button>
+
+        {mode !== 'read' ? (
           <Button
             type="primary"
             htmlType="submit"
             loading={isAdding || isUpdating}
+            style={{ marginLeft: 8 }}
           >
-            {mode === 'new' ? 'Create Project' : 'Update Project'}
+            {mode === 'new' ? 'Create' : 'Update'}
           </Button>
-        </Form.Item>
-      )}
+        ) : (
+          <>
+            <Button
+              type="primary"
+              onClick={() => navigate(`/projects/${projectId}/edit`)}
+              style={{ marginLeft: 8 }}
+            >
+              Edit
+            </Button>
+            <Button
+              type="primary"
+              danger
+              onClick={handleDeleteProject}
+              loading={isDeleting}
+              style={{ marginLeft: 8 }}
+            >
+              Delete
+            </Button>
+          </>
+        )}
+      </Form.Item>
     </Form>
   );
 };

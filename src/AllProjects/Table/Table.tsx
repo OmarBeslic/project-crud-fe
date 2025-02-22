@@ -1,11 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'antd';
-import {
-  useGetProjectsQuery,
-  useToggleFavoriteMutation,
-} from '../../../features/api/projectApi';
-import FavIcon from '../../../components/FavIcon';
+
 import { Link, useNavigate } from 'react-router-dom';
+import { useToggleFavoriteMutation } from '../../features/api/projectApi';
+import FavIcon from '../../components/FavIcon';
 
 interface ProjectTableProps {
   projects: Project[];

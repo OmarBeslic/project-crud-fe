@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button } from 'antd';
-import { useGetProjectsQuery } from '../../../features/api/projectApi';
-import ProjectTable from './Table';
-import { StyledAll } from '../StyledAll';
 import { useNavigate } from 'react-router-dom';
+import { useGetProjectsQuery } from '../../features/api/projectApi';
+import { StyledAll } from '../StyledAll';
+import ProjectTable from './Table';
 
 const AllProjects = () => {
   const navigate = useNavigate();

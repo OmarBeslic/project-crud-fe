@@ -10,6 +10,6 @@
     "outDir": "./dist",
     "rootDir": "./src"
   },
-  "include": ["src/**/*","src/@types/svg.d.ts"],
+  "include": ["src/**/*","src/@types/svg.d.ts", "src/AllProjects"],
   "exclude": ["node_modules", "dist"]
 }
