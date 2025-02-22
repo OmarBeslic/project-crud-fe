@@ -7,7 +7,7 @@ interface SidebarProps {
 export const StyledSidebar = styled.aside<SidebarProps>`
   width: 280px;
   height: 100%;
-  border-right: 2px solid gray;
+  border-right: 2px solid #ccc;
   padding: 16px 24px;
   display: flex;
   flex-direction: column;
@@ -45,14 +45,14 @@ export const StyledSidebar = styled.aside<SidebarProps>`
     position: fixed;
     top: 0;
     left: ${(props) => (props.collapsed ? '-100%' : '0')};
-    margin-top: 50px;
-    height: calc(100% - 50px);
-    border: none;
+    margin-top: 72px;
+    height: calc(100% - 72px);
     overflow: hidden;
     transition: all 0.2s ease-in-out;
     z-index: 100;
   }
   @media (max-width: 576px) {
+    border: none;
     width: 100%;
   }
 `;

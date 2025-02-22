@@ -42,12 +42,14 @@ export const StyledHeader = styled.div`
   }
   @media (max-width: 1024px) {
     padding: 10px;
-    height: 50px;
+    height: 72px;
     width: 100%;
     background: #fff;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 2px solid #ccc;
     display: flex;
     align-items: center;
+    flex-shrink: 0;
     justify-content: space-between;
+    background: #f5f5f5;
   }
 `;

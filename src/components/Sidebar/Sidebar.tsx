@@ -7,7 +7,7 @@ interface SidebarProps {
   favoriteProjects: Project[];
 }
 const Sidebar: React.FC<SidebarProps> = ({ favoriteProjects }) => {
-  const { collapsed } = useLayoutContext();
+  const { collapsed, toggleSidebar } = useLayoutContext();
   return (
     <StyledSidebar collapsed={collapsed}>
       <h1 className="sidebar-title">Favorite projects</h1>
@@ -17,7 +17,9 @@ const Sidebar: React.FC<SidebarProps> = ({ favoriteProjects }) => {
         <ul className="fav-list">
           {favoriteProjects?.map((el, idx) => (
             <li key={idx}>
-              <Link to={`/projects/${el.id}`}>{el.name}</Link>
+              <Link to={`/projects/${el.id}`} onClick={toggleSidebar}>
+                {el.name}
+              </Link>
             </li>
           ))}
         </ul>
